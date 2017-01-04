@@ -2,10 +2,12 @@
 #Utilidad para generar hashes para strings y archivos
 import argparse
 import hashlib
+import bcrypt
+from passlib.apache import HtpasswdFile
 
 
 descrip = str(""" Hasher:
-    Utilidad shell para generar hashes de archivos y strings en Pyhon.
+    Utilidad shell para generar hashes de archivos y strings en Python.
     Creado por Charlie para conectabell.com""")
 
 
@@ -50,6 +52,17 @@ def hashNTLM(w):
     return hash_object
 
 
+def hashBCrypt(w):
+    hash_object = bcrypt.hashpw(w, bcrypt.gensalt())
+    return hash_object
+
+
+def hashAPR1(w):
+    h = HtpasswdFile()
+    h.set_password("www-data", w)
+    return h.to_string()
+
+
 def hasher(w, t, c="str"):
     if (t == "sha256")and(c == "str"):
         h = hashSHA256(w)
@@ -71,6 +84,12 @@ def hasher(w, t, c="str"):
         return h
     elif (t == "NTLM") and(c == "str"):
         h = hashNTLM(w)
+        return h
+    elif (t == "bcrypt") and(c == "str"):
+        h = hashBCrypt(w)
+        return h
+    elif ((t == "apr1") or (t == "apache"))and(c == "str"):
+        h = hashAPR1(w)
         return h
     #Condicionales para los archivos
     elif (t == "md5") and(c == "file"):
