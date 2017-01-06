@@ -2,7 +2,7 @@ import os
 import hashlib
 
 
-walk_dir = "/home/antonov/Escritorio/my/Python/Directorios/"
+walk_dir = "/home/user/Escritorio/my/Python/Directorios/"
 
 
 def hasher(w, t, c="str"):
@@ -96,4 +96,4 @@ def hashRecursive(walk_dir, lvl=0, hsr=hashlib.sha256()):
     return hashlist
 
 hashRecursive(walk_dir)
-print hashArchivo(open("/home/antonov/Escritorio/my/Python/Directorios/subdir1/my-directory-list.txt", "rb"))
+print hashArchivo(open("/home/user/Escritorio/my/Python/Directorios/subdir1/my-directory-list.txt", "rb"))
