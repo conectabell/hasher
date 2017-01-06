@@ -195,11 +195,11 @@ def hashRecursive(walk_dir, lvl=0, hsr="sha256"):
     for root, subdirs, files in os.walk(walk_dir):
         for filename in files:
             file_path = os.path.join(root, filename)
-            print "Ruta: " + file_path
+            #print "Ruta: " + file_path
             #archivo = open(file_path, "rb")
             hasha = hashArchivo(file_path, hasher=hsr)
-            print "HASH-A: " + hasha
-            print "Hasher: " + hsr
+            #print "HASH-A: " + hasha
+            #print "Hasher: " + hsr
             idl += 1
             hashlist.update([(idl, (file_path, hasha))])
             #print file_path + "  -sum: " + hasha
@@ -210,7 +210,11 @@ def hashRecursive(walk_dir, lvl=0, hsr="sha256"):
 
 def export(lines, filename, make=False):
     if make is True:
-        open(filename, "wb")
+        try:
+            open(filename, "wb")
+        except IOError as e:
+            print "Error de exportacion: " + str(e.strerror)
+            sys.exit()
     with open(filename, "a+b") as arch:
         arch.write(lines)
 
@@ -249,10 +253,24 @@ if args.string:
     print args.hashtype + ": " + str(ret)
 
 if args.directory:
+    try:
+        d = os.path.dirname(args.directory)
+        if not os.path.exists(d):
+            raise Exception("Directorio no existe.")
+        if not os.access(args.directory, os.R_OK):
+            raise Exception("Directorio sin permisos de lectura")
+    except Exception as e:
+        print "Error de Directorio: " + str(e)
+        sys.exit()
+    #except IOError as e:
+    #    print "Error de Directorio: " + str(e.strerror)
+    #    sys.exit()
     if args.export:
-        txt_list = """
->>> Listado y hashes """ + args.hashtype + """:\n----------------------------\n
-"""
+        txt_list = ("""
+----------------------------
+>>> Listado y hashes """ + args.hashtype + """:
+----------------------------\n
+""")
         export(txt_list, args.export)
     if args.recursive is True:
         ret = hasher(args.directory, args.hashtype, c="recursive")
@@ -261,7 +279,7 @@ if args.directory:
             print pr
             if args.export:
                 export(pr, args.export)
-        print str(ret)
+        #print str(ret)
     else:
         ret = hasher(args.directory, args.hashtype, c="lvl1")
         #ret = hashRecursive(args.directory, lvl=1)
@@ -270,4 +288,4 @@ if args.directory:
             print pr
             if args.export:
                 export(pr, args.export)
-        print str(ret)
+        #print str(ret)
