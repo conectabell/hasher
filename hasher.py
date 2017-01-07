@@ -2,6 +2,8 @@
 #Utilidad para generar hashes para strings y archivos
 import os
 import sys
+#import time
+import datetime
 import argparse
 import hashlib
 import bcrypt
@@ -15,8 +17,7 @@ descrip = str(""" Hasher:
     md5, sha1, sha224, sha256, sha384, sha512, bcrypt, apr1 y NTLM. Para
     archivos se pueden usar lo siguientes algoritmos: md5, sha1, sha224,
     sha256, sha384 y sha512.
-    Creado por Charlie, Antonov o como me quieras llamar para
-    www.conectabell.com""")
+    Creado por Antonov para www.conectabell.com""")
 
 
 def hashSHA1(w):
@@ -187,11 +188,11 @@ def hashArchivo(ruta, hasher="sha256"):
     return ret
 
 
-def hashRecursive(walk_dir, lvl=0, hsr="sha256"):
+def hashRecursive(d, lvl=0, hsr="sha256"):
     idl = 0
     hashlist = {}
     #print('walk_dir = ' + walk_dir)
-    #print('walk_dir (absolute) = ' + os.path.abspath(walk_dir))
+    walk_dir = os.path.abspath(d)
     for root, subdirs, files in os.walk(walk_dir):
         for filename in files:
             file_path = os.path.join(root, filename)
@@ -239,7 +240,18 @@ if not args.hashtype:
     args.hashtype = "sha256"
 
 if args.export:
-        export("Conectabell Hasher \nOutput File:\n", args.export, make=True)
+    abs_dir = os.path.abspath(args.export)
+    txt = """
+-------------------------------------------------------------------------
+-------------- ConectaBell String and File Hasher Script ----------------
+-------------------------------------------------------------------------
+---------------------------- By Antonov ---------------------------------
+-------------------------------------------------------------------------
+Archivo de salida: """ + abs_dir + """
+-------------------------------------------------------------------------
+Fecha: """ + datetime.datetime.now().strftime("%d-%m-%Y") + """
+Hora: """ + datetime.datetime.now().strftime("%H:%M")
+    export(txt, args.export, make=True)
 
 if args.file:
     #archivo = open(args.file, "rb")
@@ -267,15 +279,15 @@ if args.directory:
     #    sys.exit()
     if args.export:
         txt_list = ("""
-----------------------------
->>> Listado y hashes """ + args.hashtype + """:
-----------------------------\n
+----------------------------------------------
+>>> Listado de directorios y hashes """ + args.hashtype + """:
+----------------------------------------------\n
 """)
         export(txt_list, args.export)
     if args.recursive is True:
         ret = hasher(args.directory, args.hashtype, c="recursive")
         for r in ret:
-            pr = ret[r][0] + "  -  " + ret[r][1] + "\n"
+            pr = str(r) + " - " + ret[r][0] + "  -  " + ret[r][1] + "\n"
             print pr
             if args.export:
                 export(pr, args.export)
@@ -284,7 +296,7 @@ if args.directory:
         ret = hasher(args.directory, args.hashtype, c="lvl1")
         #ret = hashRecursive(args.directory, lvl=1)
         for r in ret:
-            pr = ret[r][0] + "  -  " + ret[r][1] + "\n"
+            pr = str(r) + " - " + ret[r][0] + "  -  " + ret[r][1] + "\n"
             print pr
             if args.export:
                 export(pr, args.export)
