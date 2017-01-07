@@ -18,12 +18,12 @@ python hasher.py [-S | -F | -D (-R)] <nombre_archivo> -H <algoritmo> -X <nombre_
 ##Ejemplos
 
 Obtener el hash de una cadena de texto en sha1:
-python hasher.py -S holamundo -H sha1
+  >python hasher.py -S holamundo -H sha1
 
 Obtener el hash de un fichero en sha224:
-python hasher.py -F documento.txt -H sha224
+  >python hasher.py -F documento.txt -H sha224
 
 Obtener un listado de hashes de un directorio y todos los directorios que contiene:
-python hasher.py -D /home/user/example/dir/ -R
+  >python hasher.py -D /home/user/example/dir/ -R
 
 Creado por Antonov para www.conectabell.com
